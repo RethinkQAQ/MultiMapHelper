@@ -2,13 +2,15 @@ package com.rethink.multiMapHelper;
 
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.player.ServerConnectedEvent;
+import com.velocitypowered.api.event.player.ServerPreConnectEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
-import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.messages.ChannelIdentifier;
+import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
+import com.velocitypowered.api.proxy.server.RegisteredServer;
 import org.slf4j.Logger;
 
 import java.io.ByteArrayOutputStream;
@@ -47,15 +49,17 @@ public class MultiMapHelper {
         this.server.getChannelRegistrar().register(XAERO_WORLDMAP_CHANNEL);
     }
 
-    @Subscribe
+    @Subscribe(priority = -32768)
     private void onServerConnection(ServerConnectedEvent event) {
         logger.info("Trying to send world name to " + event.getPlayer().getUsername());
-        sendWoldName(event);
+        sendWoldName(event.getPlayer(), event.getServer(), XAERO_WORLDMAP_CHANNEL);
     }
 
-    private void sendWoldName(ServerConnectedEvent event) {
-        Player player = event.getPlayer();
-        String worldName = event.getServer().getServerInfo().getName();
+    private void sendWoldName(Player player, RegisteredServer server, ChannelIdentifier channel) {
+        if (server == null) {
+            return;
+        }
+        String worldName = server.getServerInfo().getName();
         CRC32 crc32 = new CRC32();
         byte[] worldNameBytes = worldName.getBytes(StandardCharsets.UTF_8);
         crc32.update(worldNameBytes, 0 , worldNameBytes.length);
@@ -66,6 +70,7 @@ public class MultiMapHelper {
         } catch (IOException e) {
             logger.error("Failed to write world name to byte array", e);
         }
-        player.sendPluginMessage(XAERO_WORLDMAP_CHANNEL,array.toByteArray());
+        logger.debug("Sending world name {} to {}", worldName, player.getUsername());
+        player.sendPluginMessage(channel,array.toByteArray());
     }
 }
