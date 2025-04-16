@@ -7,11 +7,11 @@ import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 public interface Channels {
     String XAERO_MINIMAP = "xaerominimap:main";
     String XAERO_WORLDMAP = "xaeroworldmap:main";
-    String WORLDMAP = "worldinfo:world_id";
-    String WORLDMAP_LEGACY = "world_id";
+    String VOXELMAP_WORLDMAP = "worldinfo:world_id";
+    String VOXELMAP_WORLDMAP_LEGACY = "world_id";
 
-    ChannelIdentifier WORLDMAP_CHANNEL = MinecraftChannelIdentifier.from(WORLDMAP);
-    ChannelIdentifier WORLDMAP_LEGACY_CHANNEL = new LegacyChannelIdentifier(WORLDMAP_LEGACY);
+    ChannelIdentifier VOXELMAP_WORLDMAP_CHANNEL = MinecraftChannelIdentifier.from(VOXELMAP_WORLDMAP);
+    ChannelIdentifier VOXELMAP_WORLDMAP_LEGACY_CHANNEL = new LegacyChannelIdentifier(VOXELMAP_WORLDMAP_LEGACY);
     ChannelIdentifier XAERO_MINIMAP_CHANNEL = MinecraftChannelIdentifier.from(XAERO_MINIMAP);
     ChannelIdentifier XAERO_WORLDMAP_CHANNEL = MinecraftChannelIdentifier.from(XAERO_WORLDMAP);
 }
