@@ -21,7 +21,8 @@ import static com.rethink.multiMapHelper.maps.Channels.*;
 @Plugin(
         id = PluginMeta.PLUGIN_ID, name = PluginMeta.PLUGIN_NAME, version = PluginMeta.PLUGIN_VERSION,
         description = "A plugin that helps with managing multi-world-maps in Minecraft",
-        authors = {"Rethink"}
+        authors = {"Rethink"},
+        url = "https://github.com/RethinkQAQ/MultiMapHelper"
 )
 public class MultiMapHelper {
 
@@ -39,19 +40,19 @@ public class MultiMapHelper {
         this.server.getChannelRegistrar().register(VOXELMAP_WORLDMAP_CHANNEL);
     }
 
-    @Subscribe
-    private void onMessage(PluginMessageEvent event) {
-        if (event.getIdentifier() == VOXELMAP_WORLDMAP_CHANNEL
-                && event.getSource() instanceof Player player
-                && Arrays.equals(event.getData(), new byte[]{0, 42, 0})) {
-            logger.info("Received world name from {}", player.getUsername());
-            if (player.getCurrentServer().isEmpty()) {
-                return;
-            }
-            RegisteredServer server = player.getCurrentServer().get().getServer();
-            worldNameHandler.sendWoldName(player, server, VOXELMAP_WORLDMAP_CHANNEL);
-        }
-    }
+//    @Subscribe
+//    private void onMessage(PluginMessageEvent event) {
+//        if (event.getIdentifier() == VOXELMAP_WORLDMAP_CHANNEL
+//                && event.getSource() instanceof Player player
+//                && Arrays.equals(event.getData(), new byte[]{0, 42, 0})) {
+//            logger.info("Received world name from {}", player.getUsername());
+//            if (player.getCurrentServer().isEmpty()) {
+//                return;
+//            }
+//            RegisteredServer server = player.getCurrentServer().get().getServer();
+////            worldNameHandler.sendWoldName(player, server, VOXELMAP_WORLDMAP_CHANNEL);
+//        }
+//    }
 
     @Subscribe
     private void onProxyInitialization(ProxyInitializeEvent event) {
@@ -67,5 +68,6 @@ public class MultiMapHelper {
     private void onServerConnection(ServerConnectedEvent event) {
         logger.info("Trying to send world name to {}", event.getPlayer().getUsername());
         worldNameHandler.sendWoldName(event.getPlayer(), event.getServer(), XAERO_WORLDMAP_CHANNEL);
+        worldNameHandler.sendWoldName(event.getPlayer(), event.getServer(), VOXELMAP_WORLDMAP_CHANNEL);
     }
 }

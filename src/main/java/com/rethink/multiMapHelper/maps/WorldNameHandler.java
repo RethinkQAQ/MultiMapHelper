@@ -34,15 +34,15 @@ public class WorldNameHandler {
                 out.write(0);
                 out.writeInt((int) crc32.getValue());
             } else if (channel == VOXELMAP_WORLDMAP_CHANNEL) {
-                out.write(0);
-                out.write(42);
+                out.writeByte(0);
+                out.writeByte(42);
                 out.write(worldNameBytes.length);
                 out.write(worldNameBytes, 0, worldNameBytes.length);
             }
         } catch (IOException e) {
             logger.error("Failed to write world name to byte array", e);
         }
-        logger.debug("Sending world name {} to {}", worldName, player.getUsername());
+        logger.info("Sending world name {} to {}", array.toByteArray(), player.getUsername());
         player.sendPluginMessage(channel, array.toByteArray());
     }
 }
