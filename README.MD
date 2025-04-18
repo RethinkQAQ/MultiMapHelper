@@ -1,4 +1,4 @@
-Enligsh | [中文](./README_CN.md)
+Enligsh | [中文](./README_CN.MD)
 # Description
 This is a simple plugin designed to help multi-world map mods select the corresponding world. 
 It retrieves the world name set by the proxy server and sends it to the client, allowing the client to choose the appropriate world.
