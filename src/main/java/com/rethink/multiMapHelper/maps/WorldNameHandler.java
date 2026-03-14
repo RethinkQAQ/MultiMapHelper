@@ -1,5 +1,6 @@
 package com.rethink.multiMapHelper.maps;
 
+import com.rethink.multiMapHelper.Config;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.messages.ChannelIdentifier;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
@@ -15,18 +16,20 @@ import static com.rethink.multiMapHelper.maps.Channels.*;
 
 public class WorldNameHandler {
     private final Logger logger;
+    private final Config config;
 
-    public WorldNameHandler(Logger logger) {
+    public WorldNameHandler(Logger logger, Config config) {
         this.logger = logger;
+        this.config = config;
     }
 
     public void sendWoldName(Player player, RegisteredServer server, ChannelIdentifier channel) {
         if (server == null) {
             return;
         }
-        String worldName = server.getServerInfo().getName();
+        String mapID = config.getMapID(server.getServerInfo().getName());
         CRC32 crc32 = new CRC32();
-        byte[] worldNameBytes = worldName.getBytes(StandardCharsets.UTF_8);
+        byte[] worldNameBytes = mapID.getBytes(StandardCharsets.UTF_8);
         crc32.update(worldNameBytes, 0, worldNameBytes.length);
         ByteArrayOutputStream array = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(array)) {
@@ -42,7 +45,7 @@ public class WorldNameHandler {
         } catch (IOException e) {
             logger.error("Failed to write world name to byte array", e);
         }
-        logger.info("Sending world name {} to {}", array.toByteArray(), player.getUsername());
+        logger.debug("Sending world name {} to {}", array.toByteArray(), player.getUsername());
         player.sendPluginMessage(channel, array.toByteArray());
     }
 }
