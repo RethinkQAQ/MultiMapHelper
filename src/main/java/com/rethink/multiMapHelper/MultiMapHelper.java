@@ -27,21 +27,11 @@ public class MultiMapHelper {
     private final WorldNameHandler worldNameHandler;
     private final Config config;
 
-    private static MultiMapHelper instance;
-    public static MultiMapHelper getInstance() {
-        return instance;
-    }
-
-    public ProxyServer getProxy() {
-        return server;
-    }
-
     @Inject
     public MultiMapHelper(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
         this.server = server;
         this.logger = logger;
-        MultiMapHelper.instance = this;
-        this.config = new Config(logger, dataDirectory.resolve("config.yaml"));
+        this.config = new Config(server, logger, dataDirectory.resolve("config.yaml"));
         this.worldNameHandler = new WorldNameHandler(logger, this.config);
         this.server.getChannelRegistrar().register(VOXELMAP_WORLDMAP_CHANNEL);
     }
@@ -58,8 +48,8 @@ public class MultiMapHelper {
 
     @Subscribe(priority = 100)
     private void onServerConnection(ServerConnectedEvent event) {
-//        logger.info("Trying to send world name to {}", event.getPlayer().getUsername());
-        worldNameHandler.sendWoldName(event.getPlayer(), event.getServer(), XAERO_WORLDMAP_CHANNEL);
-        worldNameHandler.sendWoldName(event.getPlayer(), event.getServer(), VOXELMAP_WORLDMAP_CHANNEL);
+        String mapID = config.getMapID(event.getServer().getServerInfo().getName());
+        worldNameHandler.sendWoldName(event.getPlayer(), mapID, XAERO_WORLDMAP_CHANNEL);
+        worldNameHandler.sendWoldName(event.getPlayer(), mapID, VOXELMAP_WORLDMAP_CHANNEL);
     }
 }

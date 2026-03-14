@@ -9,9 +9,13 @@ It retrieves the world name set by the proxy server and sends it to the client, 
 > MapModCompanion works better than this plugin, so I recommend using it instead.
 - [worldnamepacket](https://github.com/kosmolot-mods/worldnamepacket)
 
+# Usage
+1. Download the plugin and install it to the plugins directory.
+2. The configuration file is automatically generated with `servername: mapID` settings. The default map ID for each server is the server name. Adjust according to your needs.
+
 # Plan
 
 - [x] add support for Xaero's map
 - [x] add support for VoxelMap mod
 - [x] add support for JourneyMap mod
-- [ ] add config file to set each world name of server
+- [x] add config file to set each world name of server

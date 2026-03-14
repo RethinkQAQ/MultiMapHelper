@@ -1,5 +1,6 @@
 package com.rethink.multiMapHelper;
 
+import com.velocitypowered.api.proxy.ProxyServer;
 import org.slf4j.Logger;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.LoaderOptions;
@@ -19,12 +20,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Config {
 
     private ConfigData configData;
+    private final ProxyServer server;
     private final Logger logger;
     private final Path configPath;
     private final Yaml loadYaml;
     private final Yaml dumpYaml;
 
-    public Config(Logger logger, Path configPath) {
+    public Config(ProxyServer server, Logger logger, Path configPath) {
+        this.server = server;
         this.logger = logger;
         this.configPath = configPath;
 
@@ -50,7 +53,7 @@ public class Config {
         File file = this.configPath.toFile();
         if (!file.exists()) {
             this.configData = new ConfigData();
-            MultiMapHelper.getInstance().getProxy().getAllServers().forEach(
+            this.server.getAllServers().forEach(
                     server -> {
                         String name = server.getServerInfo().getName();
                         this.configData.getMapID().put(name, name);
@@ -100,10 +103,6 @@ public class Config {
             save();
         }
         return mapID;
-    }
-
-    public void setMapID(String serverName, String mapID) {
-        this.configData.getMapID().put(serverName, mapID);
     }
 
     public static class ConfigData {

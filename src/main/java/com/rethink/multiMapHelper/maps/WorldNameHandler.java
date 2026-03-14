@@ -23,11 +23,7 @@ public class WorldNameHandler {
         this.config = config;
     }
 
-    public void sendWoldName(Player player, RegisteredServer server, ChannelIdentifier channel) {
-        if (server == null) {
-            return;
-        }
-        String mapID = config.getMapID(server.getServerInfo().getName());
+    public void sendWoldName(Player player, String mapID, ChannelIdentifier channel) {
         CRC32 crc32 = new CRC32();
         byte[] worldNameBytes = mapID.getBytes(StandardCharsets.UTF_8);
         crc32.update(worldNameBytes, 0, worldNameBytes.length);
