@@ -33,7 +33,6 @@ public class MultiMapHelper {
         this.logger = logger;
         this.config = new Config(server, logger, dataDirectory.resolve("config.yaml"));
         this.worldNameHandler = new WorldNameHandler(logger, this.config);
-        this.server.getChannelRegistrar().register(VOXELMAP_WORLDMAP_CHANNEL);
     }
 
     @Subscribe
@@ -43,13 +42,14 @@ public class MultiMapHelper {
         }
         logger.info("MultiMapHelper is enabled");
         this.server.getChannelRegistrar().register(XAERO_WORLDMAP_CHANNEL);
+        this.server.getChannelRegistrar().register(XAERO_MINIMAP_CHANNEL);
         this.server.getChannelRegistrar().register(VOXELMAP_WORLDMAP_CHANNEL);
     }
 
-    @Subscribe(priority = 100)
     private void onServerConnection(ServerConnectedEvent event) {
         String mapID = config.getMapID(event.getServer().getServerInfo().getName());
         worldNameHandler.sendWoldName(event.getPlayer(), mapID, XAERO_WORLDMAP_CHANNEL);
+        worldNameHandler.sendWoldName(event.getPlayer(), mapID, XAERO_MINIMAP_CHANNEL);
         worldNameHandler.sendWoldName(event.getPlayer(), mapID, VOXELMAP_WORLDMAP_CHANNEL);
     }
 }
