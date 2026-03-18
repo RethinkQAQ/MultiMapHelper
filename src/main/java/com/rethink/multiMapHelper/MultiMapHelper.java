@@ -46,8 +46,12 @@ public class MultiMapHelper {
         this.server.getChannelRegistrar().register(VOXELMAP_WORLDMAP_CHANNEL);
     }
 
+    @Subscribe
     private void onServerConnection(ServerConnectedEvent event) {
         String mapID = config.getMapID(event.getServer().getServerInfo().getName());
+        if ("#none".equals(mapID)) {
+            return;
+        }
         worldNameHandler.sendWoldName(event.getPlayer(), mapID, XAERO_WORLDMAP_CHANNEL);
         worldNameHandler.sendWoldName(event.getPlayer(), mapID, XAERO_MINIMAP_CHANNEL);
         worldNameHandler.sendWoldName(event.getPlayer(), mapID, VOXELMAP_WORLDMAP_CHANNEL);
