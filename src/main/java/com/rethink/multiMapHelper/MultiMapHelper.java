@@ -1,12 +1,17 @@
 package com.rethink.multiMapHelper;
 
+import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.event.PacketListenerAbstract;
+import com.github.retrooper.packetevents.event.PacketSendEvent;
+import com.github.retrooper.packetevents.protocol.packettype.PacketType;
+import com.github.retrooper.packetevents.protocol.player.User;
 import com.google.inject.Inject;
 import com.rethink.multiMapHelper.maps.WorldNameHandler;
-import com.velocitypowered.api.event.player.ServerConnectedEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
+import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import org.slf4j.Logger;
 
@@ -40,20 +45,38 @@ public class MultiMapHelper {
         if (!this.config.load()) {
             logger.error("Failed to load config");
         }
+        PacketEvents.getAPI().init();
+        PacketEvents.getAPI().getEventManager().registerListener(new PacketListenerImpl());
         logger.info("MultiMapHelper is enabled");
         this.server.getChannelRegistrar().register(XAERO_WORLDMAP_CHANNEL);
         this.server.getChannelRegistrar().register(XAERO_MINIMAP_CHANNEL);
         this.server.getChannelRegistrar().register(VOXELMAP_WORLDMAP_CHANNEL);
     }
 
-    @Subscribe
-    private void onServerConnection(ServerConnectedEvent event) {
-        String mapID = config.getMapID(event.getServer().getServerInfo().getName());
-        if ("#none".equals(mapID)) {
-            return;
+    private class PacketListenerImpl extends PacketListenerAbstract {
+        @Override
+        public void onPacketSend(PacketSendEvent event) {
+            if (event.getPacketType() != PacketType.Play.Server.INITIALIZE_WORLD_BORDER) {
+                return;
+            }
+
+            User user = event.getUser();
+
+            Player player = server.getPlayer(user.getUUID()).orElse(null);
+            if (player == null) return;
+
+            String serverName = player.getCurrentServer()
+                    .map(conn -> conn.getServerInfo().getName())
+                    .orElse(null);
+            if (serverName == null) return;
+
+            String mapID = config.getMapID(serverName);
+            if ("#none".equals(mapID)) return;
+
+            worldNameHandler.sendWorldName(player, mapID, XAERO_WORLDMAP_CHANNEL);
+            worldNameHandler.sendWorldName(player, mapID, XAERO_MINIMAP_CHANNEL);
+            worldNameHandler.sendWorldName(player, mapID, VOXELMAP_WORLDMAP_CHANNEL);
         }
-        worldNameHandler.sendWoldName(event.getPlayer(), mapID, XAERO_WORLDMAP_CHANNEL);
-        worldNameHandler.sendWoldName(event.getPlayer(), mapID, XAERO_MINIMAP_CHANNEL);
-        worldNameHandler.sendWoldName(event.getPlayer(), mapID, VOXELMAP_WORLDMAP_CHANNEL);
     }
 }
+
