@@ -18,10 +18,14 @@ repositories {
         name = "sonatype"
         url = "https://oss.sonatype.org/content/groups/public/"
     }
+    maven { url "https://repo.viaversion.com" }
+    maven {url "https://repo.codemc.io/repository/maven-snapshots/"}
 }
 
 dependencies {
     compileOnly 'com.velocitypowered:velocity-api:3.5.0-SNAPSHOT'
+    compileOnly "com.viaversion:viaversion-api:4.10.0"
+    compileOnly "com.github.retrooper:packetevents-velocity:2.11.3-SNAPSHOT"
     annotationProcessor 'com.velocitypowered:velocity-api:3.5.0-SNAPSHOT'
 }
 
