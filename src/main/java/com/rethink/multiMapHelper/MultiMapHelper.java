@@ -9,6 +9,7 @@ import com.google.inject.Inject;
 import com.rethink.multiMapHelper.maps.WorldNameHandler;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.Player;
@@ -20,7 +21,10 @@ import java.nio.file.Path;
 import static com.rethink.multiMapHelper.maps.Channels.*;
 
 @Plugin(
-        id = PluginMeta.PLUGIN_ID, name = PluginMeta.PLUGIN_NAME, version = PluginMeta.PLUGIN_VERSION,
+        id = PluginMeta.PLUGIN_ID,
+        name = PluginMeta.PLUGIN_NAME,
+        version = PluginMeta.PLUGIN_VERSION,
+        dependencies = {@Dependency(id="packetevents")},
         description = "A plugin that helps with managing multi-world-maps in Minecraft",
         authors = {"Rethink"},
         url = "https://github.com/RethinkQAQ/MultiMapHelper"
